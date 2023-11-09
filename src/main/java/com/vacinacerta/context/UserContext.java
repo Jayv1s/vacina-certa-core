@@ -8,4 +8,5 @@ import lombok.Data;
 @Builder
 public class UserContext {
     private UserDTO userDTO;
+    private String userId;
 }
