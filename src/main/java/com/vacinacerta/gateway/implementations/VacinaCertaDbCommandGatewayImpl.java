@@ -2,6 +2,7 @@ package com.vacinacerta.gateway.implementations;
 
 import com.vacinacerta.gateway.interfaces.IVacinaCertaDbCommandGateway;
 import com.vacinacerta.model.dto.UserDTO;
+import com.vacinacerta.model.dto.UsersVaccinesDTO;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -48,5 +49,22 @@ public class VacinaCertaDbCommandGatewayImpl implements IVacinaCertaDbCommandGat
         }
 
         return null;
+    }
+
+    @Override
+    public UsersVaccinesDTO insertVaccineIntoUser(UsersVaccinesDTO usersVaccinesDTO) throws RestClientException {
+        String url = BASE_URL + "/users/vaccines";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<UsersVaccinesDTO> req = new HttpEntity<>(usersVaccinesDTO, headers);
+
+        try {
+            return restTemplate.postForObject(url, req, UsersVaccinesDTO.class);
+        } catch (RestClientException exception) {
+            System.out.println(exception.getMessage());
+            throw exception;
+        }
     }
 }
