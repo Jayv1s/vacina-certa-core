@@ -3,6 +3,7 @@ package com.vacinacerta.controller;
 import com.vacinacerta.context.UserContext;
 import com.vacinacerta.model.mapper.UserMapper;
 import com.vacinacerta.model.view.UserViewModel;
+import com.vacinacerta.model.view.UsersVaccinesViewModel;
 import com.vacinacerta.usecase.IUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,16 +18,20 @@ public class UserController {
 
     private final IUseCase<UserContext, String> createUser;
     private final IUseCase<UserContext, Void> updateUser;
+    private final IUseCase<UserContext, UsersVaccinesViewModel> addVaccineToUser;
 
     @Autowired
     private UserController(
             @Qualifier("CreateUser")
             IUseCase<UserContext, String> createUser,
             @Qualifier("UpdateUser")
-            IUseCase<UserContext, Void> updateUser
+            IUseCase<UserContext, Void> updateUser,
+            @Qualifier("AddVaccineToUser")
+            IUseCase<UserContext, UsersVaccinesViewModel> addVaccineToUser
     ){
         this.createUser = createUser;
         this.updateUser = updateUser;
+        this.addVaccineToUser = addVaccineToUser;
     }
 
     @PostMapping()
@@ -56,6 +61,21 @@ public class UserController {
 
             return new ResponseEntity<>(HttpStatus.OK);
 
+        } catch (RestClientException restClientException) {
+            return new ResponseEntity<>(restClientException.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/{userId}/{vaccineId}")
+    private ResponseEntity<Object> insertVaccineIntoUser(@PathVariable String userId, @PathVariable String vaccineId) {
+        try {
+            UserContext context = UserContext.builder()
+                    .userId(userId)
+                    .vaccineId(vaccineId)
+                    .build();
+
+            UsersVaccinesViewModel response = addVaccineToUser.execute(context);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (RestClientException restClientException) {
             return new ResponseEntity<>(restClientException.getMessage(), HttpStatus.BAD_REQUEST);
         }
