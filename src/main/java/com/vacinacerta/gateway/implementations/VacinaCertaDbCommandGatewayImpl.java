@@ -16,7 +16,7 @@ public class VacinaCertaDbCommandGatewayImpl implements IVacinaCertaDbCommandGat
     private final RestTemplate restTemplate = new RestTemplate();
     @Override
     public String insertUser(UserDTO userToInsert) throws RestClientException {
-        String uri = BASE_URL + "/user/";
+        String url = BASE_URL + "/user/";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -24,11 +24,29 @@ public class VacinaCertaDbCommandGatewayImpl implements IVacinaCertaDbCommandGat
         HttpEntity<UserDTO> req = new HttpEntity<>(userToInsert, headers);
 
         try {
-            String userId = restTemplate.postForObject(uri, req, String.class);
-            return userId;
+            return restTemplate.postForObject(url, req, String.class);
         } catch (RestClientException exception) {
-            System.out.println(exception);
+            System.out.println(exception.getMessage());
             throw exception;
         }
+    }
+
+    @Override
+    public Void updateUser(String userId, UserDTO updatedUserData) throws RestClientException {
+        String url = BASE_URL + "/user/" + userId;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<UserDTO> req = new HttpEntity<>(updatedUserData, headers);
+
+        try {
+            restTemplate.put(url,req);
+        } catch (RestClientException exception) {
+            System.out.println(exception.getMessage());
+            throw exception;
+        }
+
+        return null;
     }
 }
