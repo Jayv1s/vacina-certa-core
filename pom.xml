@@ -21,13 +21,6 @@
         <version>2.4.0</version>
     </parent>
 
-    <repositories>
-        <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/Jayv1s/vacina-certa-lib</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -50,11 +43,6 @@
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
             <version>1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.vacina-certa</groupId>
-            <artifactId>sharedentity</artifactId>
-            <version>1.0.2</version>
         </dependency>
     </dependencies>
 
