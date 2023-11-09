@@ -18,7 +18,7 @@ public class UpdateUser implements IUseCase<UserContext, Void> {
 
     @Override
     public Void execute(UserContext userContext) {
-
+        //TODO: Adicionar lógica para validar se existe vacina E user;
         vacinaCertaDbCommandGatewayImpl.updateUser(userContext.getUserId(), userContext.getUserDTO());
 
         return null;

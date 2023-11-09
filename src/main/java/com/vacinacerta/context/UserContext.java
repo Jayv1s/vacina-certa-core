@@ -9,4 +9,5 @@ import lombok.Data;
 public class UserContext {
     private UserDTO userDTO;
     private String userId;
+    private String vaccineId;
 }
