@@ -17,7 +17,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static UserViewModel convertToUserDB(UserDTO user) {
+    public static UserViewModel convertToUserViewModel(UserDTO user) {
         return UserViewModel.builder()
                 .id(user.getId())
                 .createdAt(user.getCreatedAt())

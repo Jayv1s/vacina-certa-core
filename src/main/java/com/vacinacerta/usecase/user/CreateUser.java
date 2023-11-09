@@ -1,4 +1,4 @@
-package com.vacinacerta.usecase.User;
+package com.vacinacerta.usecase.user;
 
 import com.vacinacerta.context.UserContext;
 import com.vacinacerta.gateway.interfaces.IVacinaCertaDbCommandGateway;
@@ -10,17 +10,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-@Qualifier("UpdateUser")
-public class UpdateUser implements IUseCase<UserContext, Void> {
+@Qualifier("CreateUser")
+public class CreateUser implements IUseCase<UserContext, String> {
 
     @Autowired
     private final IVacinaCertaDbCommandGateway vacinaCertaDbCommandGatewayImpl;
 
     @Override
-    public Void execute(UserContext userContext) {
-
-        vacinaCertaDbCommandGatewayImpl.updateUser(userContext.getUserId(), userContext.getUserDTO());
-
-        return null;
+    public String execute(UserContext userContext) {
+        //TODO: criar logica de BUSCAR email, CASO encontre -> NAO CRIAR NOVO USUARIO, CASO NÃO encontre -> criar usuário
+        String userId = vacinaCertaDbCommandGatewayImpl.insertUser(userContext.getUserDTO());
+        return userId;
     }
 }
