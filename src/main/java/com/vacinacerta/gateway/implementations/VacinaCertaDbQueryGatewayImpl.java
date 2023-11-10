@@ -1,6 +1,7 @@
 package com.vacinacerta.gateway.implementations;
 
 import com.vacinacerta.gateway.interfaces.IVacinaCertaDbQueryGateway;
+import com.vacinacerta.model.dto.UserDTO;
 import com.vacinacerta.model.dto.UsersVaccinesDTO;
 import com.vacinacerta.model.dto.VaccineDTO;
 import com.vacinacerta.utils.ApiConstants;
@@ -45,6 +46,23 @@ public class VacinaCertaDbQueryGatewayImpl implements IVacinaCertaDbQueryGateway
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<List<UsersVaccinesDTO>>(){}
+            ).getBody();
+        } catch (RestClientException exception) {
+            System.out.println(exception.getMessage());
+            throw exception;
+        }
+    }
+
+    @Override
+    public UserDTO getUserData(String userId) {
+        String url = BASE_URL.concat(ApiConstants.USER_PATH).concat(userId);
+
+        try {
+            return restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<UserDTO>() {}
             ).getBody();
         } catch (RestClientException exception) {
             System.out.println(exception.getMessage());

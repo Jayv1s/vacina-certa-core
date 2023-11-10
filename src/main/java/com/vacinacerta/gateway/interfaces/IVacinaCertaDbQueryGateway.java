@@ -1,5 +1,6 @@
 package com.vacinacerta.gateway.interfaces;
 
+import com.vacinacerta.model.dto.UserDTO;
 import com.vacinacerta.model.dto.UsersVaccinesDTO;
 import com.vacinacerta.model.dto.VaccineDTO;
 
@@ -9,4 +10,6 @@ public interface IVacinaCertaDbQueryGateway {
     List<VaccineDTO> getAllVaccines();
 
     List<UsersVaccinesDTO> getAllVaccinesFromUser(String userId);
+
+    UserDTO getUserData(String userId);
 }
