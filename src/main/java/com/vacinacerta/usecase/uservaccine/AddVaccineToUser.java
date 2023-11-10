@@ -1,4 +1,4 @@
-package com.vacinacerta.usecase.user;
+package com.vacinacerta.usecase.uservaccine;
 
 import com.vacinacerta.context.UserContext;
 import com.vacinacerta.gateway.interfaces.IVacinaCertaDbCommandGateway;
