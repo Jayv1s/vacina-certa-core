@@ -3,6 +3,7 @@ package com.vacinacerta.gateway.implementations;
 import com.vacinacerta.gateway.interfaces.IVacinaCertaDbQueryGateway;
 import com.vacinacerta.model.dto.UsersVaccinesDTO;
 import com.vacinacerta.model.dto.VaccineDTO;
+import com.vacinacerta.utils.ApiConstants;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,8 @@ public class VacinaCertaDbQueryGatewayImpl implements IVacinaCertaDbQueryGateway
 
     @Override
     public List<VaccineDTO> getAllVaccines() {
-        String url = BASE_URL + "vaccine/list-all";
+        String API_PATH = "list-all";
+        String url = BASE_URL.concat(ApiConstants.VACCINE_PATH).concat(API_PATH);
 
         try {
             return restTemplate.exchange(url,
@@ -35,7 +37,7 @@ public class VacinaCertaDbQueryGatewayImpl implements IVacinaCertaDbQueryGateway
 
     @Override
     public List<UsersVaccinesDTO> getAllVaccinesFromUser(String userId) {
-        String url = BASE_URL + "/users/" + userId + "/vaccines";
+        String url = BASE_URL.concat(ApiConstants.USERS_PATH).concat(userId).concat(ApiConstants.VACCINES_PATH);
 
         try {
             return restTemplate.exchange(

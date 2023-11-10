@@ -3,6 +3,7 @@ package com.vacinacerta.gateway.implementations;
 import com.vacinacerta.gateway.interfaces.IVacinaCertaDbCommandGateway;
 import com.vacinacerta.model.dto.UserDTO;
 import com.vacinacerta.model.dto.UsersVaccinesDTO;
+import com.vacinacerta.utils.ApiConstants;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,7 +18,7 @@ public class VacinaCertaDbCommandGatewayImpl implements IVacinaCertaDbCommandGat
     private final RestTemplate restTemplate = new RestTemplate();
     @Override
     public String insertUser(UserDTO userToInsert) throws RestClientException {
-        String url = BASE_URL + "/user/";
+        String url = BASE_URL.concat(ApiConstants.USER_PATH);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -34,7 +35,7 @@ public class VacinaCertaDbCommandGatewayImpl implements IVacinaCertaDbCommandGat
 
     @Override
     public Void updateUser(String userId, UserDTO updatedUserData) throws RestClientException {
-        String url = BASE_URL + "/user/" + userId;
+        String url = BASE_URL.concat(ApiConstants.USER_PATH).concat(userId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -53,7 +54,7 @@ public class VacinaCertaDbCommandGatewayImpl implements IVacinaCertaDbCommandGat
 
     @Override
     public UsersVaccinesDTO insertVaccineIntoUser(UsersVaccinesDTO usersVaccinesDTO) throws RestClientException {
-        String url = BASE_URL + "/users/vaccines";
+        String url = BASE_URL.concat(ApiConstants.USERS_PATH).concat(ApiConstants.VACCINES_PATH);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
