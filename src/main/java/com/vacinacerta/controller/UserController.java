@@ -22,6 +22,7 @@ public class UserController {
     private final IUseCase<UserContext, Void> updateUser;
     private final IUseCase<UserContext, UsersVaccinesViewModel> addVaccineToUser;
     private final IUseCase<UserContext, List<UsersVaccinesViewModel>> getUsersVaccines;
+    private final IUseCase<UserContext, UserViewModel> getUserData;
 
     @Autowired
     private UserController(
@@ -32,12 +33,15 @@ public class UserController {
             @Qualifier("AddVaccineToUser")
             IUseCase<UserContext, UsersVaccinesViewModel> addVaccineToUser,
             @Qualifier("GetUsersVaccines")
-            IUseCase<UserContext, List<UsersVaccinesViewModel>> getUsersVaccines
+            IUseCase<UserContext, List<UsersVaccinesViewModel>> getUsersVaccines,
+            @Qualifier("GetUserData")
+            IUseCase<UserContext, UserViewModel> getUserData
     ){
         this.createUser = createUser;
         this.updateUser = updateUser;
         this.addVaccineToUser = addVaccineToUser;
         this.getUsersVaccines = getUsersVaccines;
+        this.getUserData = getUserData;
     }
 
     @PostMapping()
@@ -95,6 +99,20 @@ public class UserController {
                     .build();
 
             List<UsersVaccinesViewModel> response = getUsersVaccines.execute(userContext);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (RestClientException restClientException) {
+            return new ResponseEntity<>(restClientException.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{userId}")
+    private ResponseEntity<Object> getUserData(@PathVariable String userId) {
+        try {
+            UserContext context = UserContext.builder()
+                    .userId(userId)
+                    .build();
+
+            UserViewModel response = getUserData.execute(context);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (RestClientException restClientException) {
             return new ResponseEntity<>(restClientException.getMessage(), HttpStatus.BAD_REQUEST);
