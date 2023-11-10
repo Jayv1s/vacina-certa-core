@@ -18,7 +18,7 @@ public class CreateUserUseCase implements IUseCase<UserContext, String> {
 
     @Override
     public String execute(UserContext userContext) {
-        //TODO: criar logica de BUSCAR email, CASO encontre -> NAO CRIAR NOVO USUARIO, CASO NÃO encontre -> criar usuário
+        //TODO: criar logica de BUSCAR document + documento_type, CASO encontre -> NAO CRIAR NOVO USUARIO, CASO NÃO encontre -> criar usuário
         String userId = vacinaCertaDbCommandGatewayImpl.insertUser(userContext.getUserDTO());
         return userId;
     }

@@ -12,4 +12,6 @@ public interface IVacinaCertaDbQueryGateway {
     List<UsersVaccinesDTO> getAllVaccinesFromUser(String userId);
 
     UserDTO getUserData(String userId);
+
+    VaccineDTO getVaccineData(String vaccineId);
 }

@@ -8,6 +8,7 @@ import com.vacinacerta.utils.ApiConstants;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -64,8 +65,35 @@ public class VacinaCertaDbQueryGatewayImpl implements IVacinaCertaDbQueryGateway
                     null,
                     new ParameterizedTypeReference<UserDTO>() {}
             ).getBody();
-        } catch (RestClientException exception) {
+        } catch (HttpClientErrorException exception) {
             System.out.println(exception.getMessage());
+
+            if(exception.getStatusCode().is4xxClientError()) {
+                return null;
+            }
+
+            throw exception;
+        }
+    }
+
+    @Override
+    public VaccineDTO getVaccineData(String vaccineId) {
+        String url = BASE_URL.concat(ApiConstants.VACCINE_PATH).concat(vaccineId);
+
+        try {
+            return restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<VaccineDTO>() {}
+            ).getBody();
+        } catch (HttpClientErrorException exception) {
+            System.out.println(exception.getMessage());
+
+            if(exception.getStatusCode().is4xxClientError()) {
+                return null;
+            }
+
             throw exception;
         }
     }
