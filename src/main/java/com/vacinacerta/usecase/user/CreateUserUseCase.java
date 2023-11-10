@@ -10,17 +10,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-@Qualifier("UpdateUser")
-public class UpdateUser implements IUseCase<UserContext, Void> {
+@Qualifier("CreateUser")
+public class CreateUserUseCase implements IUseCase<UserContext, String> {
 
     @Autowired
     private final IVacinaCertaDbCommandGateway vacinaCertaDbCommandGatewayImpl;
 
     @Override
-    public Void execute(UserContext userContext) {
-        //TODO: Adicionar lógica para validar se existe vacina E user;
-        vacinaCertaDbCommandGatewayImpl.updateUser(userContext.getUserId(), userContext.getUserDTO());
-
-        return null;
+    public String execute(UserContext userContext) {
+        //TODO: criar logica de BUSCAR document + documento_type, CASO encontre -> NAO CRIAR NOVO USUARIO, CASO NÃO encontre -> criar usuário
+        String userId = vacinaCertaDbCommandGatewayImpl.insertUser(userContext.getUserDTO());
+        return userId;
     }
 }

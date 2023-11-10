@@ -1,7 +1,9 @@
 package com.vacinacerta.controller;
 
 import com.vacinacerta.context.UserContext;
+import com.vacinacerta.exception.BusinessLogicException;
 import com.vacinacerta.model.mapper.UserMapper;
+import com.vacinacerta.model.view.ExceptionResponseViewModel;
 import com.vacinacerta.model.view.UserViewModel;
 import com.vacinacerta.model.view.UsersVaccinesViewModel;
 import com.vacinacerta.usecase.IUseCase;
@@ -10,7 +12,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClientException;
 
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class UserController {
             String result = createUser.execute(context);
 
             return new ResponseEntity<>(result, HttpStatus.CREATED);
-        } catch (RestClientException restClientException) {
+        } catch (Exception restClientException) {
             return new ResponseEntity<>(restClientException.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -71,8 +72,16 @@ public class UserController {
 
             return new ResponseEntity<>(HttpStatus.OK);
 
-        } catch (RestClientException restClientException) {
-            return new ResponseEntity<>(restClientException.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception exception) {
+
+            if(exception instanceof BusinessLogicException) {
+                ExceptionResponseViewModel exceptionResponseViewModel = ExceptionResponseViewModel.builder()
+                        .errorMessage(((BusinessLogicException) exception).getErrorMessage())
+                        .statusCode(((BusinessLogicException) exception).getStatusCode())
+                        .build();
+                return new ResponseEntity<>(exceptionResponseViewModel, ((BusinessLogicException) exception).getStatusCode());
+            }
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -86,8 +95,16 @@ public class UserController {
 
             UsersVaccinesViewModel response = addVaccineToUser.execute(context);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (RestClientException restClientException) {
-            return new ResponseEntity<>(restClientException.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception exception) {
+
+            if(exception instanceof BusinessLogicException) {
+                ExceptionResponseViewModel exceptionResponseViewModel = ExceptionResponseViewModel.builder()
+                        .errorMessage(((BusinessLogicException) exception).getErrorMessage())
+                        .statusCode(((BusinessLogicException) exception).getStatusCode())
+                        .build();
+                return new ResponseEntity<>(exceptionResponseViewModel, ((BusinessLogicException) exception).getStatusCode());
+            }
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -100,8 +117,16 @@ public class UserController {
 
             List<UsersVaccinesViewModel> response = getUsersVaccines.execute(userContext);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (RestClientException restClientException) {
-            return new ResponseEntity<>(restClientException.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception exception) {
+
+            if(exception instanceof BusinessLogicException) {
+                ExceptionResponseViewModel exceptionResponseViewModel = ExceptionResponseViewModel.builder()
+                        .errorMessage(((BusinessLogicException) exception).getErrorMessage())
+                        .statusCode(((BusinessLogicException) exception).getStatusCode())
+                        .build();
+                return new ResponseEntity<>(exceptionResponseViewModel, ((BusinessLogicException) exception).getStatusCode());
+            }
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -114,8 +139,16 @@ public class UserController {
 
             UserViewModel response = getUserData.execute(context);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (RestClientException restClientException) {
-            return new ResponseEntity<>(restClientException.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception exception) {
+
+            if(exception instanceof BusinessLogicException) {
+                ExceptionResponseViewModel exceptionResponseViewModel = ExceptionResponseViewModel.builder()
+                        .errorMessage(((BusinessLogicException) exception).getErrorMessage())
+                        .statusCode(((BusinessLogicException) exception).getStatusCode())
+                        .build();
+                return new ResponseEntity<>(exceptionResponseViewModel, ((BusinessLogicException) exception).getStatusCode());
+            }
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
