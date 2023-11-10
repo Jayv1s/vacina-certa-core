@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 @Qualifier("AddVaccineToUser")
-public class AddVaccineToUser implements IUseCase<UserContext, UsersVaccinesViewModel> {
+public class AddVaccineToUserUseCase implements IUseCase<UserContext, UsersVaccinesViewModel> {
 
     @Autowired
     private final IVacinaCertaDbCommandGateway vacinaCertaDbCommandGatewayImpl;

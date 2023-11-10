@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 @Qualifier("GetUsersVaccines")
-public class GetUsersVaccines implements IUseCase<UserContext, List<UsersVaccinesViewModel>> {
+public class GetUsersVaccinesUseCase implements IUseCase<UserContext, List<UsersVaccinesViewModel>> {
 
     @Autowired
     private final IVacinaCertaDbQueryGateway vacinaCertaDbQueryGatewayImpl;

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 @Qualifier("UpdateUser")
-public class UpdateUser implements IUseCase<UserContext, Void> {
+public class UpdateUserUseCase implements IUseCase<UserContext, Void> {
 
     @Autowired
     private final IVacinaCertaDbCommandGateway vacinaCertaDbCommandGatewayImpl;

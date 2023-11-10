@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 @Qualifier("GetUserData")
-public class GetUserData implements IUseCase<UserContext, UserViewModel> {
+public class GetUserDataUseCase implements IUseCase<UserContext, UserViewModel> {
 
     @Autowired
     private final IVacinaCertaDbQueryGateway vacinaCertaDbQueryGatewayImpl;
