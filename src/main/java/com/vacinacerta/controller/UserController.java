@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -19,6 +21,7 @@ public class UserController {
     private final IUseCase<UserContext, String> createUser;
     private final IUseCase<UserContext, Void> updateUser;
     private final IUseCase<UserContext, UsersVaccinesViewModel> addVaccineToUser;
+    private final IUseCase<UserContext, List<UsersVaccinesViewModel>> getUsersVaccines;
 
     @Autowired
     private UserController(
@@ -27,11 +30,14 @@ public class UserController {
             @Qualifier("UpdateUser")
             IUseCase<UserContext, Void> updateUser,
             @Qualifier("AddVaccineToUser")
-            IUseCase<UserContext, UsersVaccinesViewModel> addVaccineToUser
+            IUseCase<UserContext, UsersVaccinesViewModel> addVaccineToUser,
+            @Qualifier("GetUsersVaccines")
+            IUseCase<UserContext, List<UsersVaccinesViewModel>> getUsersVaccines
     ){
         this.createUser = createUser;
         this.updateUser = updateUser;
         this.addVaccineToUser = addVaccineToUser;
+        this.getUsersVaccines = getUsersVaccines;
     }
 
     @PostMapping()
@@ -75,6 +81,20 @@ public class UserController {
                     .build();
 
             UsersVaccinesViewModel response = addVaccineToUser.execute(context);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (RestClientException restClientException) {
+            return new ResponseEntity<>(restClientException.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{userId}/vaccines")
+    private ResponseEntity<Object> getAllVaccinesFromUser(@PathVariable String userId) {
+        try {
+            UserContext userContext = UserContext.builder()
+                    .userId(userId)
+                    .build();
+
+            List<UsersVaccinesViewModel> response = getUsersVaccines.execute(userContext);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (RestClientException restClientException) {
             return new ResponseEntity<>(restClientException.getMessage(), HttpStatus.BAD_REQUEST);
