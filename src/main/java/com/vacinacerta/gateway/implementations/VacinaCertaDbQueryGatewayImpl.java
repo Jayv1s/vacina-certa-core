@@ -1,6 +1,7 @@
 package com.vacinacerta.gateway.implementations;
 
 import com.vacinacerta.gateway.interfaces.IVacinaCertaDbQueryGateway;
+import com.vacinacerta.model.dto.UsersVaccinesDTO;
 import com.vacinacerta.model.dto.VaccineDTO;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -25,6 +26,23 @@ public class VacinaCertaDbQueryGatewayImpl implements IVacinaCertaDbQueryGateway
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<List<VaccineDTO>>(){}
+            ).getBody();
+        } catch (RestClientException exception) {
+            System.out.println(exception.getMessage());
+            throw exception;
+        }
+    }
+
+    @Override
+    public List<UsersVaccinesDTO> getAllVaccinesFromUser(String userId) {
+        String url = BASE_URL + "/users/" + userId + "/vaccines";
+
+        try {
+            return restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<UsersVaccinesDTO>>(){}
             ).getBody();
         } catch (RestClientException exception) {
             System.out.println(exception.getMessage());
