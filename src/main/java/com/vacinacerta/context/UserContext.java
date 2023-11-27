@@ -10,4 +10,5 @@ public class UserContext {
     private UserDTO userDTO;
     private String userId;
     private String vaccineId;
+    private String jwtToken;
 }
