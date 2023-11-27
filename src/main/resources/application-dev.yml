@@ -3,11 +3,13 @@ spring:
     activate:
       on-profile: dev
 
-server:
-  port: 8082
-
 application:
   name: dev-profile
 
 logging:
   level.: DEBUG
+
+gateway:
+  urls:
+    vacina-certa-command: ${VACCINA_CERTA_COMMAND}
+    vacina-certa-query: ${VACCINA_CERTA_QUERY}
