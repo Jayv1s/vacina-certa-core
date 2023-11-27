@@ -28,7 +28,7 @@ public class GetUsersVaccinesUseCase implements IUseCase<UserContext, List<Users
 
     @Override
     public List<UsersVaccinesViewModel> execute(UserContext userContext) throws BusinessLogicException {
-        UserDTO userDTO = vacinaCertaDbQueryGatewayImpl.getUserData(userContext.getUserId());
+        UserDTO userDTO = vacinaCertaDbQueryGatewayImpl.getUserData(userContext.getUserId(), userContext.getJwtToken());
 
         if(Objects.isNull(userDTO)) {
             String errorMsg = String.format("User of ID: %s not found", userContext.getUserId());
@@ -36,7 +36,8 @@ public class GetUsersVaccinesUseCase implements IUseCase<UserContext, List<Users
         }
 
         List<UsersVaccinesDTO> usersVaccinesDTOList = vacinaCertaDbQueryGatewayImpl.getAllVaccinesFromUser(
-                userContext.getUserId()
+                userContext.getUserId(),
+                userContext.getJwtToken()
         );
 
         List<UsersVaccinesViewModel> usersVaccinesViewModelList = new ArrayList<>();

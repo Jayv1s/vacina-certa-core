@@ -26,7 +26,7 @@ public class UpdateUserUseCase implements IUseCase<UserContext, Void> {
 
     @Override
     public Void execute(UserContext userContext) throws BusinessLogicException {
-        UserDTO userDTO = vacinaCertaDbQueryGatewayImpl.getUserData(userContext.getUserId());
+        UserDTO userDTO = vacinaCertaDbQueryGatewayImpl.getUserData(userContext.getUserId(),userContext.getJwtToken());
 
         if(Objects.isNull(userDTO)) {
             String errorMsg = String.format("User of ID: %s not found", userContext.getUserId());
@@ -34,7 +34,7 @@ public class UpdateUserUseCase implements IUseCase<UserContext, Void> {
         }
 
 
-        vacinaCertaDbCommandGatewayImpl.updateUser(userContext.getUserId(), userContext.getUserDTO());
+        vacinaCertaDbCommandGatewayImpl.updateUser(userContext.getUserId(), userContext.getUserDTO(), userContext.getJwtToken());
 
         return null;
     }

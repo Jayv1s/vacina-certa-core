@@ -25,7 +25,7 @@ public class GetUserDataUseCase implements IUseCase<UserContext, UserViewModel> 
 
     @Override
     public UserViewModel execute(UserContext userContext) throws BusinessLogicException {
-        UserDTO userDTO = vacinaCertaDbQueryGatewayImpl.getUserData(userContext.getUserId());
+        UserDTO userDTO = vacinaCertaDbQueryGatewayImpl.getUserData(userContext.getUserId(), userContext.getJwtToken());
 
         if(Objects.isNull(userDTO)) {
             String errorMsg = String.format("User of ID: %s not found", userContext.getUserId());
