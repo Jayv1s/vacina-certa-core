@@ -5,9 +5,9 @@ import com.vacinacerta.model.dto.UsersVaccinesDTO;
 import org.springframework.web.client.RestClientException;
 
 public interface IVacinaCertaDbCommandGateway {
-    String insertUser(UserDTO userToInsert) throws RestClientException;
+    String insertUser(UserDTO userToInsert, String jwtToken) throws RestClientException;
 
-    Void updateUser(String userId, UserDTO updatedUserData) throws RestClientException;
+    Void updateUser(String userId, UserDTO updatedUserData, String jwtToken) throws RestClientException;
 
-    UsersVaccinesDTO insertVaccineIntoUser(UsersVaccinesDTO usersVaccinesDTO) throws RestClientException;
+    UsersVaccinesDTO insertVaccineIntoUser(UsersVaccinesDTO usersVaccinesDTO, String jwtToken) throws RestClientException;
 }

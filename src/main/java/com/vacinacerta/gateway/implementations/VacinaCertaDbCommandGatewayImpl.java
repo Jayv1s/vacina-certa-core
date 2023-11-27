@@ -4,6 +4,7 @@ import com.vacinacerta.gateway.interfaces.IVacinaCertaDbCommandGateway;
 import com.vacinacerta.model.dto.UserDTO;
 import com.vacinacerta.model.dto.UsersVaccinesDTO;
 import com.vacinacerta.utils.ApiConstants;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,14 +15,16 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class VacinaCertaDbCommandGatewayImpl implements IVacinaCertaDbCommandGateway {
 
-    private static final String BASE_URL = "http://localhost:8080";
+    @Value(value = "${gateway.urls.vacina-certa-command}")
+    private String BASE_URL;
     private final RestTemplate restTemplate = new RestTemplate();
     @Override
-    public String insertUser(UserDTO userToInsert) throws RestClientException {
+    public String insertUser(UserDTO userToInsert, String jwtToken) throws RestClientException {
         String url = BASE_URL.concat(ApiConstants.USER_PATH);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(jwtToken);
 
         HttpEntity<UserDTO> req = new HttpEntity<>(userToInsert, headers);
 
@@ -34,11 +37,12 @@ public class VacinaCertaDbCommandGatewayImpl implements IVacinaCertaDbCommandGat
     }
 
     @Override
-    public Void updateUser(String userId, UserDTO updatedUserData) throws RestClientException {
+    public Void updateUser(String userId, UserDTO updatedUserData, String jwtToken) throws RestClientException {
         String url = BASE_URL.concat(ApiConstants.USER_PATH).concat(userId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(jwtToken);
 
         HttpEntity<UserDTO> req = new HttpEntity<>(updatedUserData, headers);
 
@@ -53,11 +57,12 @@ public class VacinaCertaDbCommandGatewayImpl implements IVacinaCertaDbCommandGat
     }
 
     @Override
-    public UsersVaccinesDTO insertVaccineIntoUser(UsersVaccinesDTO usersVaccinesDTO) throws RestClientException {
+    public UsersVaccinesDTO insertVaccineIntoUser(UsersVaccinesDTO usersVaccinesDTO, String jwtToken) throws RestClientException {
         String url = BASE_URL.concat(ApiConstants.USERS_PATH).concat(ApiConstants.VACCINES_PATH);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(jwtToken);
 
         HttpEntity<UsersVaccinesDTO> req = new HttpEntity<>(usersVaccinesDTO, headers);
 

@@ -46,10 +46,12 @@ public class UserController {
     }
 
     @PostMapping()
-    private ResponseEntity<Object> createUser(@RequestBody UserViewModel userViewModel) {
+    private ResponseEntity<Object> createUser(@RequestBody UserViewModel userViewModel, @RequestHeader(value = "Authorization") String authorizationToken) {
         try {
+            System.out.println(authorizationToken);
             UserContext context = UserContext.builder()
                     .userDTO(UserMapper.convertToUsersDTO(userViewModel))
+                    .jwtToken(authorizationToken.split(" ")[1])
                     .build();
 
             String result = createUser.execute(context);
@@ -61,11 +63,12 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    private ResponseEntity<Object> updateUser(@PathVariable String userId, @RequestBody UserViewModel userViewModel) {
+    private ResponseEntity<Object> updateUser(@PathVariable String userId, @RequestBody UserViewModel userViewModel, @RequestHeader(value = "Authorization") String authorizationToken) {
         try {
             UserContext context = UserContext.builder()
                     .userId(userId)
                     .userDTO(UserMapper.convertToUsersDTO(userViewModel))
+                    .jwtToken(authorizationToken.split(" ")[1])
                     .build();
 
             updateUser.execute(context);
@@ -86,11 +89,12 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/{vaccineId}")
-    private ResponseEntity<Object> insertVaccineIntoUser(@PathVariable String userId, @PathVariable String vaccineId) {
+    private ResponseEntity<Object> insertVaccineIntoUser(@PathVariable String userId, @PathVariable String vaccineId, @RequestHeader(value = "Authorization") String authorizationToken) {
         try {
             UserContext context = UserContext.builder()
                     .userId(userId)
                     .vaccineId(vaccineId)
+                    .jwtToken(authorizationToken.split(" ")[1])
                     .build();
 
             UsersVaccinesViewModel response = addVaccineToUser.execute(context);
@@ -109,10 +113,11 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/vaccines")
-    private ResponseEntity<Object> getAllVaccinesFromUser(@PathVariable String userId) {
+    private ResponseEntity<Object> getAllVaccinesFromUser(@PathVariable String userId, @RequestHeader(value = "Authorization") String authorizationToken) {
         try {
             UserContext userContext = UserContext.builder()
                     .userId(userId)
+                    .jwtToken(authorizationToken.split(" ")[1])
                     .build();
 
             List<UsersVaccinesViewModel> response = getUsersVaccines.execute(userContext);
@@ -131,10 +136,11 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    private ResponseEntity<Object> getUserData(@PathVariable String userId) {
+    private ResponseEntity<Object> getUserData(@PathVariable String userId, @RequestHeader(value = "Authorization") String authorizationToken) {
         try {
             UserContext context = UserContext.builder()
                     .userId(userId)
+                    .jwtToken(authorizationToken.split(" ")[1])
                     .build();
 
             UserViewModel response = getUserData.execute(context);

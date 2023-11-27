@@ -7,11 +7,11 @@ import com.vacinacerta.model.dto.VaccineDTO;
 import java.util.List;
 
 public interface IVacinaCertaDbQueryGateway {
-    List<VaccineDTO> getAllVaccines();
+    List<VaccineDTO> getAllVaccines(String jwtToken);
 
-    List<UsersVaccinesDTO> getAllVaccinesFromUser(String userId);
+    List<UsersVaccinesDTO> getAllVaccinesFromUser(String userId, String jwtToken);
 
-    UserDTO getUserData(String userId);
+    UserDTO getUserData(String userId, String jwtToken);
 
-    VaccineDTO getVaccineData(String vaccineId);
+    VaccineDTO getVaccineData(String vaccineId, String jwtToken);
 }

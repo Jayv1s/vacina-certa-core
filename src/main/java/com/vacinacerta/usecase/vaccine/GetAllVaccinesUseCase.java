@@ -15,14 +15,14 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 @Qualifier("GetAllVaccines")
-public class GetAllVaccinesUseCase implements IUseCase<Void, List<VaccineViewModel>> {
+public class GetAllVaccinesUseCase implements IUseCase<String, List<VaccineViewModel>> {
 
     private final IVacinaCertaDbQueryGateway vacinaCertaDbQueryGatewayImpl;
 
     @Override
-    public  List<VaccineViewModel> execute(Void unused) {
+    public  List<VaccineViewModel> execute(String jwtToken) {
 
-        List<VaccineDTO> vaccineDTOS = vacinaCertaDbQueryGatewayImpl.getAllVaccines();
+        List<VaccineDTO> vaccineDTOS = vacinaCertaDbQueryGatewayImpl.getAllVaccines(jwtToken);
 
         List<VaccineViewModel> vaccineViewModelList = new ArrayList<>();
 
