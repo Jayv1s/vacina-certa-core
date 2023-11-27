@@ -13,14 +13,15 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
-    public String id;
-    public String firstName;
-    public String lastName;
-    public LocalDateTime dateOfBirth;
-    public String document;
-    public String documentType;
-    public LocalDateTime createdAt;
-    public LocalDateTime updatedAt;
-    //TODO: adicionar e-mail
+    private String id;
+    private String firstName;
+    private String lastName;
+    private LocalDateTime dateOfBirth;
+    private String document;
+    private String documentType;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private String phone;
+    private String nickname;
     private Set<Object> vaccines;
 }

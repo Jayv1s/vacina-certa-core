@@ -16,5 +16,7 @@ public class UserViewModel {
     public String documentType;
     public LocalDateTime createdAt;
     public LocalDateTime updatedAt;
+    private String phone;
+    private String nickname;
     //private Set<UsersVaccines> vaccines;
 }

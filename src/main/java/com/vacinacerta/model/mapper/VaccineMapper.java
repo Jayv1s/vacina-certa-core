@@ -14,6 +14,9 @@ public class VaccineMapper {
                 .manufacturer(vaccineViewModel.getManufacturer())
                 .popularName(vaccineViewModel.getPopularName())
                 .updatedAt(vaccineViewModel.getUpdatedAt())
+                .dosage(vaccineViewModel.getDosage())
+                .description(vaccineViewModel.getDescription())
+                .required(vaccineViewModel.getRequired())
                 .build();
     }
 
@@ -27,6 +30,9 @@ public class VaccineMapper {
                 .manufacturer(vaccineDTO.getManufacturer())
                 .popularName(vaccineDTO.getPopularName())
                 .updatedAt(vaccineDTO.getUpdatedAt())
+                .dosage(vaccineDTO.getDosage())
+                .description(vaccineDTO.getDescription())
+                .required(vaccineDTO.getRequired())
                 .build();
     }
 }

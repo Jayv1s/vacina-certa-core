@@ -14,6 +14,8 @@ public class UserMapper {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .updatedAt(user.getUpdatedAt())
+                .phone(user.getPhone())
+                .nickname(user.getNickname())
                 .build();
     }
 
@@ -27,6 +29,8 @@ public class UserMapper {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .updatedAt(user.getUpdatedAt())
+                .phone(user.getPhone())
+                .nickname(user.getNickname())
                 .build();
     }
 }
