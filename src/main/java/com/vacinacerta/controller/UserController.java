@@ -24,6 +24,7 @@ public class UserController {
     private final IUseCase<UserContext, UsersVaccinesViewModel> addVaccineToUser;
     private final IUseCase<UserContext, List<UsersVaccinesViewModel>> getUsersVaccines;
     private final IUseCase<UserContext, UserViewModel> getUserData;
+    private final IUseCase<UserContext, Void> addBatchOfVaccinesToUserUseCase;
 
     @Autowired
     private UserController(
@@ -36,13 +37,16 @@ public class UserController {
             @Qualifier("GetUsersVaccines")
             IUseCase<UserContext, List<UsersVaccinesViewModel>> getUsersVaccines,
             @Qualifier("GetUserData")
-            IUseCase<UserContext, UserViewModel> getUserData
+            IUseCase<UserContext, UserViewModel> getUserData,
+            @Qualifier("AddBatchOfVaccinesToUserUseCase")
+            IUseCase<UserContext, Void> addBatchOfVaccinesToUserUseCase
     ){
         this.createUser = createUser;
         this.updateUser = updateUser;
         this.addVaccineToUser = addVaccineToUser;
         this.getUsersVaccines = getUsersVaccines;
         this.getUserData = getUserData;
+        this.addBatchOfVaccinesToUserUseCase = addBatchOfVaccinesToUserUseCase;
     }
 
     @PostMapping()
@@ -88,17 +92,33 @@ public class UserController {
         }
     }
 
-    @PostMapping("/{userId}/{vaccineId}")
-    private ResponseEntity<Object> insertVaccineIntoUser(@PathVariable String userId, @PathVariable String vaccineId, @RequestHeader(value = "Authorization") String authorizationToken) {
+    @PostMapping("/{userId}/vaccines")
+    private ResponseEntity<Object> insertVaccineIntoUser(@PathVariable String userId, @RequestBody List<String> vaccineIds, @RequestHeader(value = "Authorization") String authorizationToken) {
         try {
-            UserContext context = UserContext.builder()
-                    .userId(userId)
-                    .vaccineId(vaccineId)
-                    .jwtToken(authorizationToken.split(" ")[1])
-                    .build();
+            if (vaccineIds.size() == 1) {
+                UserContext context = UserContext.builder()
+                        .userId(userId)
+                        .vaccineId(vaccineIds.get(0))
+                        .jwtToken(authorizationToken.split(" ")[1])
+                        .build();
 
-            UsersVaccinesViewModel response = addVaccineToUser.execute(context);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+                UsersVaccinesViewModel response = addVaccineToUser.execute(context);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            if (vaccineIds.size() > 1) {
+                UserContext context = UserContext.builder()
+                        .userId(userId)
+                        .vaccines(vaccineIds)
+                        .jwtToken(authorizationToken.split(" ")[1])
+                        .build();
+
+                addBatchOfVaccinesToUserUseCase.execute(context);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+
+
+            throw new Exception("Empty body");
         } catch (Exception exception) {
 
             if(exception instanceof BusinessLogicException) {
