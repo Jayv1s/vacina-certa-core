@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @Component
 public class VacinaCertaDbCommandGatewayImpl implements IVacinaCertaDbCommandGateway {
 
@@ -58,7 +60,7 @@ public class VacinaCertaDbCommandGatewayImpl implements IVacinaCertaDbCommandGat
 
     @Override
     public UsersVaccinesDTO insertVaccineIntoUser(UsersVaccinesDTO usersVaccinesDTO, String jwtToken) throws RestClientException {
-        String url = BASE_URL.concat(ApiConstants.USERS_PATH).concat(ApiConstants.VACCINES_PATH);
+        String url = BASE_URL.concat(ApiConstants.USERS_PATH).concat(usersVaccinesDTO.getUserDTO().getId()).concat(ApiConstants.VACCINES_PATH);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -68,6 +70,24 @@ public class VacinaCertaDbCommandGatewayImpl implements IVacinaCertaDbCommandGat
 
         try {
             return restTemplate.postForObject(url, req, UsersVaccinesDTO.class);
+        } catch (RestClientException exception) {
+            System.out.println(exception.getMessage());
+            throw exception;
+        }
+    }
+
+    @Override
+    public Void insertVaccineBatchIntoUser(String userId, List<String> vaccineIds, String jwtToken) throws RestClientException {
+        String url = BASE_URL.concat(ApiConstants.USERS_PATH).concat(userId).concat(ApiConstants.VACCINES_PATH).concat(ApiConstants.BATCH_PATH);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(jwtToken);
+
+        HttpEntity<List<String>> req = new HttpEntity<>(vaccineIds, headers);
+
+        try {
+            return restTemplate.postForObject(url, req, Void.class);
         } catch (RestClientException exception) {
             System.out.println(exception.getMessage());
             throw exception;
