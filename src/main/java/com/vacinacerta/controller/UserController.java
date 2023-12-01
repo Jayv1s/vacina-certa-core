@@ -3,6 +3,7 @@ package com.vacinacerta.controller;
 import com.vacinacerta.context.UserContext;
 import com.vacinacerta.exception.BusinessLogicException;
 import com.vacinacerta.model.mapper.UserMapper;
+import com.vacinacerta.model.request.UserVaccineRequest;
 import com.vacinacerta.model.view.ExceptionResponseViewModel;
 import com.vacinacerta.model.view.UserViewModel;
 import com.vacinacerta.model.view.UsersVaccinesViewModel;
@@ -93,26 +94,20 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/vaccines")
-    private ResponseEntity<Object> insertVaccineIntoUser(@PathVariable String userId, @RequestBody List<String> vaccineIds, @RequestHeader(value = "Authorization") String authorizationToken) {
+    private ResponseEntity<Object> insertVaccineIntoUser(@PathVariable String userId, @RequestBody List<UserVaccineRequest> vaccines, @RequestHeader(value = "Authorization") String authorizationToken) {
         try {
-            if (vaccineIds.size() == 1) {
-                UserContext context = UserContext.builder()
-                        .userId(userId)
-                        .vaccineId(vaccineIds.get(0))
-                        .jwtToken(authorizationToken.split(" ")[1])
-                        .build();
+            UserContext context = UserContext.builder()
+                    .userId(userId)
+                    .vaccines(vaccines)
+                    .jwtToken(authorizationToken.split(" ")[1])
+                    .build();
 
+            if (vaccines.size() == 1) {
                 UsersVaccinesViewModel response = addVaccineToUser.execute(context);
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            if (vaccineIds.size() > 1) {
-                UserContext context = UserContext.builder()
-                        .userId(userId)
-                        .vaccines(vaccineIds)
-                        .jwtToken(authorizationToken.split(" ")[1])
-                        .build();
-
+            if (vaccines.size() > 1) {
                 addBatchOfVaccinesToUserUseCase.execute(context);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
@@ -120,7 +115,7 @@ public class UserController {
 
             throw new Exception("Empty body");
         } catch (Exception exception) {
-
+            System.out.println(exception);
             if(exception instanceof BusinessLogicException) {
                 ExceptionResponseViewModel exceptionResponseViewModel = ExceptionResponseViewModel.builder()
                         .errorMessage(((BusinessLogicException) exception).getErrorMessage())

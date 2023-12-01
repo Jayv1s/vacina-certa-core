@@ -1,8 +1,10 @@
 package com.vacinacerta.gateway.implementations;
 
+import com.vacinacerta.context.UserContext;
 import com.vacinacerta.gateway.interfaces.IVacinaCertaDbCommandGateway;
 import com.vacinacerta.model.dto.UserDTO;
 import com.vacinacerta.model.dto.UsersVaccinesDTO;
+import com.vacinacerta.model.request.UserVaccineRequest;
 import com.vacinacerta.utils.ApiConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -59,14 +61,14 @@ public class VacinaCertaDbCommandGatewayImpl implements IVacinaCertaDbCommandGat
     }
 
     @Override
-    public UsersVaccinesDTO insertVaccineIntoUser(UsersVaccinesDTO usersVaccinesDTO, String jwtToken) throws RestClientException {
-        String url = BASE_URL.concat(ApiConstants.USERS_PATH).concat(usersVaccinesDTO.getUserDTO().getId()).concat(ApiConstants.VACCINES_PATH);
+    public UsersVaccinesDTO insertVaccineIntoUser(UserContext context, String jwtToken) throws RestClientException {
+        String url = BASE_URL.concat(ApiConstants.USERS_PATH).concat(context.getUserId()).concat(ApiConstants.VACCINES_PATH);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        HttpEntity<UsersVaccinesDTO> req = new HttpEntity<>(usersVaccinesDTO, headers);
+        HttpEntity<UserVaccineRequest> req = new HttpEntity<>(context.getVaccines().get(0), headers);
 
         try {
             return restTemplate.postForObject(url, req, UsersVaccinesDTO.class);
@@ -77,14 +79,14 @@ public class VacinaCertaDbCommandGatewayImpl implements IVacinaCertaDbCommandGat
     }
 
     @Override
-    public Void insertVaccineBatchIntoUser(String userId, List<String> vaccineIds, String jwtToken) throws RestClientException {
+    public Void insertVaccineBatchIntoUser(String userId, List<UserVaccineRequest> vaccineRequests, String jwtToken) throws RestClientException {
         String url = BASE_URL.concat(ApiConstants.USERS_PATH).concat(userId).concat(ApiConstants.VACCINES_PATH).concat(ApiConstants.BATCH_PATH);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(jwtToken);
 
-        HttpEntity<List<String>> req = new HttpEntity<>(vaccineIds, headers);
+        HttpEntity<List<UserVaccineRequest>> req = new HttpEntity<>(vaccineRequests, headers);
 
         try {
             return restTemplate.postForObject(url, req, Void.class);

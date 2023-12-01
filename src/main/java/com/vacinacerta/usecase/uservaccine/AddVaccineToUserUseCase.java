@@ -37,23 +37,14 @@ public class AddVaccineToUserUseCase implements IUseCase<UserContext, UsersVacci
             throw new BusinessLogicException(errorMsg, HttpStatus.NOT_FOUND);
         }
 
-        VaccineDTO vaccineDTO = vacinaCertaDbQueryGatewayImpl.getVaccineData(userContext.getVaccineId(), userContext.getJwtToken());
+        VaccineDTO vaccineDTO = vacinaCertaDbQueryGatewayImpl.getVaccineData(userContext.getVaccines().get(0).getVaccineDTO().getId(), userContext.getJwtToken());
 
         if(Objects.isNull(vaccineDTO)) {
             String errorMsg = String.format("Vaccine of ID: %s not found", userContext.getVaccineId());
             throw new BusinessLogicException(errorMsg, HttpStatus.NOT_FOUND);
         }
 
-        UsersVaccinesDTO usersVaccinesDTOToBeInserted = UsersVaccinesDTO.builder()
-                .vaccineDTO(
-                        VaccineDTO.builder().id(userContext.getVaccineId()).build()
-                )
-                .userDTO(
-                        UserDTO.builder().id(userContext.getUserId()).build()
-                )
-                .build();
-
-        UsersVaccinesDTO usersVaccinesDTOResult = vacinaCertaDbCommandGatewayImpl.insertVaccineIntoUser(usersVaccinesDTOToBeInserted, userContext.getJwtToken());
+        UsersVaccinesDTO usersVaccinesDTOResult = vacinaCertaDbCommandGatewayImpl.insertVaccineIntoUser(userContext, userContext.getJwtToken());
 
         return UsersVaccinesMapper.convertToUsersVaccinesViewModel(usersVaccinesDTOResult);
     }

@@ -1,6 +1,7 @@
 package com.vacinacerta.context;
 
 import com.vacinacerta.model.dto.UserDTO;
+import com.vacinacerta.model.request.UserVaccineRequest;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,6 +13,6 @@ public class UserContext {
     private UserDTO userDTO;
     private String userId;
     private String vaccineId;
-    private List<String> vaccines;
     private String jwtToken;
+    private List<UserVaccineRequest> vaccines;
 }
