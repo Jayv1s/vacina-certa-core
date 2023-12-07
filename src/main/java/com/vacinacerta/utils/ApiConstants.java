@@ -6,4 +6,6 @@ public class ApiConstants {
     public static final String USERS_PATH = "/users/";
     public static final String USER_PATH = "/user/";
     public static final String BATCH_PATH = "/batch/";
+    public static final String UPDATE_PASSWORD = "/update-password/";
+    public static final String LOGIN = "/login";
 }

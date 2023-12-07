@@ -14,5 +14,7 @@ public class UserContext {
     private String userId;
     private String vaccineId;
     private String jwtToken;
+    private String actualPassword;
+    private String newPassword;
     private List<UserVaccineRequest> vaccines;
 }

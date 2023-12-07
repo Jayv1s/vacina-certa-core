@@ -3,7 +3,6 @@ package com.vacinacerta.usecase.user;
 import com.vacinacerta.context.UserContext;
 import com.vacinacerta.exception.BusinessLogicException;
 import com.vacinacerta.gateway.interfaces.IVacinaCertaAuthGateway;
-import com.vacinacerta.gateway.interfaces.IVacinaCertaDbCommandGateway;
 import com.vacinacerta.gateway.interfaces.IVacinaCertaDbQueryGateway;
 import com.vacinacerta.model.dto.UserDTO;
 import com.vacinacerta.usecase.IUseCase;
@@ -17,11 +16,9 @@ import java.util.Objects;
 
 @Service
 @AllArgsConstructor
-@Qualifier("UpdateUser")
-public class UpdateUserUseCase implements IUseCase<UserContext, Void> {
+@Qualifier("UpdateUserPasswordUseCase")
+public class UpdateUserPasswordUseCase implements IUseCase<UserContext, Void> {
 
-    @Autowired
-    private final IVacinaCertaDbCommandGateway vacinaCertaDbCommandGatewayImpl;
     @Autowired
     private final IVacinaCertaDbQueryGateway vacinaCertaDbQueryGatewayImpl;
     @Autowired
@@ -36,11 +33,15 @@ public class UpdateUserUseCase implements IUseCase<UserContext, Void> {
             throw new BusinessLogicException(errorMsg, HttpStatus.NOT_FOUND);
         }
 
-        if(Objects.nonNull(userContext.getNewPassword()) && Objects.nonNull(userContext.getActualPassword())) {
-            vacinaCertaAuthGateway.updateUserPassword(userContext);
+        try {
+            if(Objects.nonNull(userContext.getNewPassword()) && Objects.nonNull(userContext.getActualPassword())) {
+                vacinaCertaAuthGateway.updateUserPassword(userContext);
+            } else {
+                throw new BusinessLogicException("Missing password", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception exception) {
+            throw new BusinessLogicException("Password doesn't match", HttpStatus.BAD_REQUEST);
         }
-
-        vacinaCertaDbCommandGatewayImpl.updateUser(userContext.getUserId(), userContext.getUserDTO(), userContext.getJwtToken());
 
         return null;
     }

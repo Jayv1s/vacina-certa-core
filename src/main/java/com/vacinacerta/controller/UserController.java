@@ -3,6 +3,7 @@ package com.vacinacerta.controller;
 import com.vacinacerta.context.UserContext;
 import com.vacinacerta.exception.BusinessLogicException;
 import com.vacinacerta.model.mapper.UserMapper;
+import com.vacinacerta.model.request.NewPasswordRequest;
 import com.vacinacerta.model.request.UserVaccineRequest;
 import com.vacinacerta.model.view.ExceptionResponseViewModel;
 import com.vacinacerta.model.view.UserViewModel;
@@ -27,6 +28,8 @@ public class UserController {
     private final IUseCase<UserContext, List<UsersVaccinesViewModel>> getUsersVaccines;
     private final IUseCase<UserContext, UserViewModel> getUserData;
     private final IUseCase<UserContext, Void> addBatchOfVaccinesToUserUseCase;
+    private final IUseCase<UserContext, Void> updateUserPasswordUseCase;
+
 
     @Autowired
     private UserController(
@@ -41,7 +44,9 @@ public class UserController {
             @Qualifier("GetUserData")
             IUseCase<UserContext, UserViewModel> getUserData,
             @Qualifier("AddBatchOfVaccinesToUserUseCase")
-            IUseCase<UserContext, Void> addBatchOfVaccinesToUserUseCase
+            IUseCase<UserContext, Void> addBatchOfVaccinesToUserUseCase,
+            @Qualifier("UpdateUserPasswordUseCase")
+            IUseCase<UserContext, Void> updateUserPasswordUseCase
     ){
         this.createUser = createUser;
         this.updateUser = updateUser;
@@ -49,6 +54,7 @@ public class UserController {
         this.getUsersVaccines = getUsersVaccines;
         this.getUserData = getUserData;
         this.addBatchOfVaccinesToUserUseCase = addBatchOfVaccinesToUserUseCase;
+        this.updateUserPasswordUseCase = updateUserPasswordUseCase;
     }
 
     @PostMapping()
@@ -65,6 +71,33 @@ public class UserController {
             return new ResponseEntity<>(result, HttpStatus.CREATED);
         } catch (Exception restClientException) {
             return new ResponseEntity<>(restClientException.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/password/{userId}")
+    private ResponseEntity<Object> updateUserPassword(@PathVariable String userId, @RequestBody NewPasswordRequest newPasswordRequest, @RequestHeader(value = "Authorization") String authorizationToken) {
+        try {
+            UserContext context = UserContext.builder()
+                    .userId(userId)
+                    .newPassword(newPasswordRequest.getNewPassword())
+                    .actualPassword(newPasswordRequest.getActualPassword())
+                    .jwtToken(authorizationToken.split(" ")[1])
+                    .build();
+
+            updateUserPasswordUseCase.execute(context);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (Exception exception) {
+
+            if(exception instanceof BusinessLogicException) {
+                ExceptionResponseViewModel exceptionResponseViewModel = ExceptionResponseViewModel.builder()
+                        .errorMessage(((BusinessLogicException) exception).getErrorMessage())
+                        .statusCode(((BusinessLogicException) exception).getStatusCode())
+                        .build();
+                return new ResponseEntity<>(exceptionResponseViewModel, ((BusinessLogicException) exception).getStatusCode());
+            }
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
