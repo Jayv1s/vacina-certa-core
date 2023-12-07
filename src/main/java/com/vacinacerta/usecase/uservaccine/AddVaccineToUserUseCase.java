@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -42,6 +43,15 @@ public class AddVaccineToUserUseCase implements IUseCase<UserContext, UsersVacci
         if(Objects.isNull(vaccineDTO)) {
             String errorMsg = String.format("Vaccine of ID: %s not found", userContext.getVaccineId());
             throw new BusinessLogicException(errorMsg, HttpStatus.NOT_FOUND);
+        }
+
+        List<UsersVaccinesDTO> usersVaccinesDTOList = vacinaCertaDbQueryGatewayImpl.getAllVaccinesFromUser(userContext.getUserId(), userContext.getJwtToken());
+
+        for (UsersVaccinesDTO userVacciness : usersVaccinesDTOList) {
+          if(userVacciness.getVaccineDTO().getId().equals(userContext.getVaccines().get(0).getVaccineDTO().getId())) {
+              String errorMsg = String.format("Vaccine of ID: %s already added into User %s", userVacciness.getVaccineDTO().getId(), userContext.getUserId());
+              throw new BusinessLogicException(errorMsg, HttpStatus.BAD_REQUEST);
+          }
         }
 
         UsersVaccinesDTO usersVaccinesDTOResult = vacinaCertaDbCommandGatewayImpl.insertVaccineIntoUser(userContext, userContext.getJwtToken());

@@ -14,5 +14,8 @@
 
 # [START gae_java11_helloworld_yaml]
 runtime: java11
+service: core
+inbound_services:
+  - warmup
 #entrypoint: java -Xmx64m -jar target/vacinacerta.jar
 # [END gae_java11_helloworld_yaml]

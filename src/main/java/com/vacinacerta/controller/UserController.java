@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/user")
@@ -136,6 +137,11 @@ public class UserController {
                     .build();
 
             List<UsersVaccinesViewModel> response = getUsersVaccines.execute(userContext);
+
+            if (Objects.isNull(response)) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception exception) {
 
